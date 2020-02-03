@@ -1,0 +1,119 @@
+object fScr_Main: TfScr_Main
+  Left = 0
+  Top = 0
+  Caption = 'Panel'
+  ClientHeight = 600
+  ClientWidth = 335
+  Fill.Color = xFF646464
+  Fill.Kind = Solid
+  Position = ScreenCenter
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Orientations = [Portrait]
+  FormFactor.Devices = [iPhone]
+  OnCreate = FormCreate
+  OnKeyUp = FormKeyUp
+  OnShow = FormShow
+  DesignerMasterStyle = 3
+  object StatusBar1: TStatusBar
+    ControlType = Platform
+    Hint = 'hola'
+    Position.Y = 578.000000000000000000
+    ShowSizeGrip = True
+    Size.Width = 335.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object oBtn_Salir: TTMSFMXBarButton
+    Cancel = True
+    Default = True
+    Position.X = 71.000000000000000000
+    Position.Y = 441.000000000000000000
+    Size.Width = 193.000000000000000000
+    Size.Height = 44.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 5
+    Text = 'SALIR'
+    OnClick = oBtn_SalirClick
+    Version = '1.5.0.2'
+  end
+  object oBtn_Setting: TTMSFMXBarButton
+    Position.X = 71.000000000000000000
+    Position.Y = 129.000000000000000000
+    Size.Width = 193.000000000000000000
+    Size.Height = 44.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 4
+    Text = 'CONFIGURAR'
+    Version = '1.5.0.2'
+  end
+  object oBtn_Quick_Inv: TTMSFMXBarButton
+    Position.X = 71.000000000000000000
+    Position.Y = 207.000000000000000000
+    Size.Width = 193.000000000000000000
+    Size.Height = 44.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 3
+    Text = 'INVENTARIO'
+    Version = '1.5.0.2'
+  end
+  object oBtn_Send_Data: TTMSFMXBarButton
+    Position.X = 71.000000000000000000
+    Position.Y = 363.000000000000000000
+    Size.Width = 193.000000000000000000
+    Size.Height = 44.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    Text = 'ENVIAR TOMAS'
+    OnClick = oBtn_Send_DataClick
+    Version = '1.5.0.2'
+  end
+  object oBtn_Cargar: TTMSFMXBarButton
+    Position.X = 71.000000000000000000
+    Position.Y = 285.000000000000000000
+    Size.Width = 193.000000000000000000
+    Size.Height = 44.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Text = 'CARGAR TOMA'
+    OnClick = oBtn_CargarClick
+    Version = '1.5.0.2'
+  end
+  object Memo1: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    DataDetectorTypes = []
+    Position.X = 24.000000000000000000
+    Position.Y = 504.000000000000000000
+    Size.Width = 305.000000000000000000
+    Size.Height = 57.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 11
+    Viewport.Width = 305.000000000000000000
+    Viewport.Height = 57.000000000000000000
+  end
+  object oConn: TFDConnection
+    Params.Strings = (
+      'DriverID=SQLite'
+      'Database=m_quick_inv.s3db')
+    LoginPrompt = False
+    Left = 32
+    Top = 24
+  end
+  object FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink
+    Left = 152
+    Top = 24
+  end
+  object oCmnd: TFDCommand
+    Connection = oConn
+    Left = 272
+    Top = 24
+  end
+  object oQry_Gen: TFDQuery
+    Connection = oConn
+    Left = 32
+    Top = 88
+  end
+end
