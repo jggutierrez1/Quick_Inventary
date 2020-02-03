@@ -13,7 +13,7 @@ uses
   FMX.ScrollBox, FMX.Memo, FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics,
   FMX.Dialogs, FMX.Controls.Presentation, FMX.StdCtrls, FMX.TMSCustomButton,
   FMX.TMSBarButton, FMX.Layouts, FMX.Helpers.Android, FMX.PhoneDialer, FMX.Edit,
-  FMX.Ani, FMX.Effects, FMX.ExtCtrls;
+  FMX.Ani, FMX.Effects, FMX.ExtCtrls ;
 
 type
   TfScr_Activa = class(TForm)
