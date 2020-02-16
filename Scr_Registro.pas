@@ -1,5 +1,5 @@
 unit Scr_Registro;
-
+
 interface
 
 uses
@@ -22,12 +22,13 @@ type
     olEmail: TLabel;
     oEmail: TEdit;
     EmailValidLabel: TLabel;
-    olDeviceId: TLabel;
+    olContacto: TLabel;
     olStatus: TLabel;
     oBtn_Salir: TTMSFMXBarButton;
     ImageViewer1: TImageViewer;
     oTM_Chek_Internet: TTimer;
     oBtn_Solic: TTMSFMXBarButton;
+    olDeviceId: TLabel;
     procedure oEmailValidate(Sender: TObject; var Text: string);
     procedure oBtn_SalirClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -189,3 +190,4 @@ end;
 
 end.
 
+

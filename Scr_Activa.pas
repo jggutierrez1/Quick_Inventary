@@ -13,7 +13,7 @@ uses
   FMX.ScrollBox, FMX.Memo, FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics,
   FMX.Dialogs, FMX.Controls.Presentation, FMX.StdCtrls, FMX.TMSCustomButton,
   FMX.TMSBarButton, FMX.Layouts, FMX.Helpers.Android, FMX.PhoneDialer, FMX.Edit,
-  FMX.Ani, FMX.Effects, FMX.ExtCtrls ;
+  FMX.Ani, FMX.Effects, FMX.ExtCtrls;
 
 type
   TfScr_Activa = class(TForm)
@@ -29,6 +29,7 @@ type
     MaterialOxfordBlueSB: TStyleBook;
     ImageViewer1: TImageViewer;
     olCodigo: TLabel;
+    olContacto: TLabel;
     procedure oBtn_ExitClick(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure oChek_InternetTimer(Sender: TObject);
@@ -127,6 +128,7 @@ begin
   if (self.iIntentos >= 3) then
   begin
     ShowMessage('DEMASIADOS INTENTOS.');
+    ModalResult := mrCancel;
     Application.Terminate();
     Exit;
   end;
@@ -146,9 +148,9 @@ begin
   iResult := StrToInt(cResult);
   if (iResult = 1) then
   begin
-    Pub_Unit.active_device(cClave);
+    ModalResult := mrOk;
+    //Pub_Unit.active_device(cClave);
     close;
-    exit;
   end
   else
   begin
@@ -160,6 +162,7 @@ end;
 
 procedure TfScr_Activa.oBtn_ExitClick(Sender: TObject);
 begin
+  ModalResult := mrCancel;
   self.iIntentos := 0;
   Application.Terminate();
 end;

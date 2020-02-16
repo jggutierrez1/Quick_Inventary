@@ -64,6 +64,7 @@ var
   oConnParams: TStringList;
   cpDecimales: Char = '.';
   cpThousand: Char = ',';
+  cSqlCreateDisp: string;
 
 const
   HTTP_GET_NOT_BUSY = 0;
@@ -262,6 +263,8 @@ function CheckUrl2(url: string): boolean;
 function Check_Ip_Disp(): Boolean;
 
 function GetFromJsonResult(cJsonString: string; cFielsName: string): string;
+
+function StripUnwantedText(cText: string): string;
 
 implementation
 
@@ -470,7 +473,7 @@ begin
           ProgressBar1.Value := 0;
         end;
       end);
-}                                                                                                                                                                                                                                                                                end;
+}                                                                                                                                                                                                                                                                                                end;
 end;
 
 function GetConnectivityManager: JConnectivityManager;
@@ -1338,6 +1341,7 @@ begin
     on E: Exception do
     begin
       Application.ShowException(E);
+      ShowMessage(pSQL);
       Result := ''
     end;
   end;
@@ -1364,6 +1368,7 @@ begin
     on E: Exception do
     begin
       Application.ShowException(E);
+      ShowMessage(pSQL);
       Result := ''
     end;
   end;
@@ -1394,6 +1399,8 @@ begin
   except
     on E: Exception do
     begin
+      Application.ShowException(E);
+      ShowMessage(sSql.text);
       Result := False;
     end;
   end;
@@ -1422,6 +1429,8 @@ begin
   except
     on E: Exception do
     begin
+      Application.ShowException(E);
+      ShowMessage(sSql);
       Result := False;
     end;
   end;
@@ -1452,6 +1461,8 @@ begin
   except
     on E: Exception do
     begin
+      Application.ShowException(E);
+      ShowMessage(sSql);
       Result := False;
     end;
   end;
@@ -1501,6 +1512,7 @@ begin
     begin
       Result := False;
       Application.ShowException(E);
+      ShowMessage(pSQL)
     end;
   end;
 end;
@@ -1529,6 +1541,7 @@ begin
     on E: Exception do
     begin
       Application.ShowException(E);
+      ShowMessage(pScript.text);
       Result := False;
     end;
   end;
@@ -1554,6 +1567,7 @@ begin
     on E: Exception do
     begin
       Application.ShowException(E);
+      ShowMessage(pScript);
       Result := False;
     end;
   end;
@@ -1579,6 +1593,7 @@ begin
     on E: Exception do
     begin
       Application.ShowException(E);
+      ShowMessage(pScript.text);
       Result := False;
     end;
   end;
@@ -1605,6 +1620,7 @@ begin
     on E: Exception do
     begin
       Application.ShowException(E);
+      ShowMessage(pScript.text);
       Result := False;
     end;
   end;
@@ -1716,7 +1732,7 @@ begin
   Pub_Unit.Execute_SQL_Command('DELETE FROM dispositivos');
 
   cSql_Ln := '';
-  cSql_Ln := cSql_Ln + 'INSERT INTO dispositivos(serial, fecha_pacceso,clave_install,acceso_periodo,fecha_desde,fecha_hasta,acceso_subidas,subidas_counter) VALUES ';
+  cSql_Ln := cSql_Ln + 'INSERT INTO dispositivos (serial, fecha_pacceso,clave_install,acceso_periodo,fecha_desde,fecha_hasta,acceso_subidas,subidas_counter,subidas_total) VALUES ';
   cSql_Ln := cSql_Ln + '("' + cid_device + '","' + cNow + '","' + cClave + '",0,null,null,0,0)';
   Pub_Unit.Execute_SQL_Command(cSql_Ln);
 end;
@@ -1735,19 +1751,20 @@ begin
   cSql_Ln := cSql_Ln + 'CREATE TABLE IF NOT EXISTS dispositivos (';
   cSql_Ln := cSql_Ln + 'id              INTEGER     NOT NULL,';
   cSql_Ln := cSql_Ln + 'emp_id          INT(3)      NULL DEFAULT 0,';
-  cSql_Ln := cSql_Ln + 'serial          VARCHAR(50) NOT NULL DEFAULT "",';
+  cSql_Ln := cSql_Ln + 'serial          VARCHAR(50) NULL DEFAULT "",';
   cSql_Ln := cSql_Ln + 'nom_enti        VARCHAR(50) NULL DEFAULT "",';
   cSql_Ln := cSql_Ln + 'nom_oper        VARCHAR(50) NULL DEFAULT "",';
   cSql_Ln := cSql_Ln + 'dev_mail        VARCHAR(50) NULL DEFAULT "",';
   cSql_Ln := cSql_Ln + 'clave_install   VARCHAR(30) NULL DEFAULT "",';
   cSql_Ln := cSql_Ln + 'fecha_pacceso   DATETIME    NULL DEFAULT NULL,';
-  cSql_Ln := cSql_Ln + 'fecha_uacces    DATETIME    NULL DEFAULT NULL,';
+  cSql_Ln := cSql_Ln + 'fecha_uacceso   DATETIME    NULL DEFAULT NULL,';
   cSql_Ln := cSql_Ln + 'dbname          VARCHAR(30) NULL DEFAULT "",';
   cSql_Ln := cSql_Ln + 'acceso_periodo  INT(1)      NULL DEFAULT 0,';
   cSql_Ln := cSql_Ln + 'fecha_desde     DATETIME    NULL DEFAULT NULL,';
   cSql_Ln := cSql_Ln + 'fecha_hasta     DATETIME    NULL DEFAULT NULL,';
   cSql_Ln := cSql_Ln + 'acceso_subidas  INT(1)      NULL DEFAULT 0,';
   cSql_Ln := cSql_Ln + 'subidas_counter INT(11)     NULL DEFAULT 0,';
+  cSql_Ln := cSql_Ln + 'subidas_total   INT(11)     NULL DEFAULT 0,';
   cSql_Ln := cSql_Ln + 'CONSTRAINT dispositivos PRIMARY KEY (id))';
   Pub_Unit.Execute_SQL_Command(cSql_Ln);
 end;
@@ -1778,22 +1795,23 @@ begin
     Pub_Unit.Execute_SQL_Command(cSql_Ln);
 
     cSql_Ln := '';
-    cSql_Ln := cSql_Ln + 'CREATE TABLE IF NOT EXISTS dispositivos (';
+    cSql_Ln := cSql_Ln + 'CREATE TABLE dispositivos (';
     cSql_Ln := cSql_Ln + 'id              INTEGER     NOT NULL,';
     cSql_Ln := cSql_Ln + 'emp_id          INT(3)      NULL DEFAULT 0,';
-    cSql_Ln := cSql_Ln + 'serial          VARCHAR(50) NOT NULL DEFAULT "",';
+    cSql_Ln := cSql_Ln + 'serial          VARCHAR(50) NULL DEFAULT "",';
     cSql_Ln := cSql_Ln + 'nom_enti        VARCHAR(50) NULL DEFAULT "",';
     cSql_Ln := cSql_Ln + 'nom_oper        VARCHAR(50) NULL DEFAULT "",';
     cSql_Ln := cSql_Ln + 'dev_mail        VARCHAR(50) NULL DEFAULT "",';
     cSql_Ln := cSql_Ln + 'clave_install   VARCHAR(30) NULL DEFAULT "",';
     cSql_Ln := cSql_Ln + 'fecha_pacceso   DATETIME    NULL DEFAULT NULL,';
-    cSql_Ln := cSql_Ln + 'fecha_uacces    DATETIME    NULL DEFAULT NULL,';
+    cSql_Ln := cSql_Ln + 'fecha_uacceso   DATETIME    NULL DEFAULT NULL,';
     cSql_Ln := cSql_Ln + 'dbname          VARCHAR(30) NULL DEFAULT "",';
     cSql_Ln := cSql_Ln + 'acceso_periodo  INT(1)      NULL DEFAULT 0,';
     cSql_Ln := cSql_Ln + 'fecha_desde     DATETIME    NULL DEFAULT NULL,';
     cSql_Ln := cSql_Ln + 'fecha_hasta     DATETIME    NULL DEFAULT NULL,';
     cSql_Ln := cSql_Ln + 'acceso_subidas  INT(1)      NULL DEFAULT 0,';
     cSql_Ln := cSql_Ln + 'subidas_counter INT(11)     NULL DEFAULT 0,';
+    cSql_Ln := cSql_Ln + 'subidas_total   INT(11)     NULL DEFAULT 0,';
     cSql_Ln := cSql_Ln + 'CONSTRAINT dispositivos PRIMARY KEY (id))';
     Pub_Unit.Execute_SQL_Command(cSql_Ln);
   end;
@@ -1807,7 +1825,7 @@ var
 begin
   cNow := Pub_Unit.DateTimeForSQL(now());
 
-  cSql_Ln := 'SELECT serial, fecha_pacceso, clave_install FROM dispositivos WHERE serial="' + cid_device + '"';
+  cSql_Ln := 'SELECT count(*) FROM dispositivos WHERE serial="' + cid_device + '"';
   cRecords := query_selectgen_result(cSql_Ln);
   if ((Trim(cRecords) = '') or (Trim(cRecords) = 'NULL') or (Trim(cRecords) = 'null')) then
     cRecords := '0';
@@ -2042,8 +2060,39 @@ begin
 end;
 }
 
+function StripUnwantedText(cText: string): string;
+var
+  cResult: string;
+begin
+  cResult := StringReplace(cText, #13, '', [rfReplaceAll]);
+  cResult := StringReplace(cResult, #10, '', [rfReplaceAll]);
+  cResult := StringReplace(cResult, #9, '', [rfReplaceAll]);
+  cResult := StringReplace(cResult, #13 + #10, '', [rfReplaceAll]);
+  Result := cResult
+end;
+
 initialization
   cDb_Path := System.IOUtils.TPath.Combine(System.IOUtils.TPath.GetDocumentsPath, 'm_quick_inv.s3db');
+
+  cSqlCreateDisp := '';
+  cSqlCreateDisp := cSqlCreateDisp + 'CREATE TABLE IF NOT EXISTS dispositivos (';
+  cSqlCreateDisp := cSqlCreateDisp + 'id              INTEGER     NOT NULL,';
+  cSqlCreateDisp := cSqlCreateDisp + 'emp_id          INT(3)      NULL DEFAULT 0,';
+  cSqlCreateDisp := cSqlCreateDisp + 'serial          VARCHAR(50) NULL DEFAULT "",';
+  cSqlCreateDisp := cSqlCreateDisp + 'nom_enti        VARCHAR(50) NULL DEFAULT "",';
+  cSqlCreateDisp := cSqlCreateDisp + 'nom_oper        VARCHAR(50) NULL DEFAULT "",';
+  cSqlCreateDisp := cSqlCreateDisp + 'dev_mail        VARCHAR(50) NULL DEFAULT "",';
+  cSqlCreateDisp := cSqlCreateDisp + 'clave_install   VARCHAR(30) NULL DEFAULT "",';
+  cSqlCreateDisp := cSqlCreateDisp + 'fecha_pacceso   DATETIME    NULL DEFAULT NULL,';
+  cSqlCreateDisp := cSqlCreateDisp + 'fecha_uacceso   DATETIME    NULL DEFAULT NULL,';
+  cSqlCreateDisp := cSqlCreateDisp + 'dbname          VARCHAR(30) NULL DEFAULT "",';
+  cSqlCreateDisp := cSqlCreateDisp + 'acceso_periodo  INT(1)      NULL DEFAULT 0,';
+  cSqlCreateDisp := cSqlCreateDisp + 'fecha_desde     DATETIME    NULL DEFAULT NULL,';
+  cSqlCreateDisp := cSqlCreateDisp + 'fecha_hasta     DATETIME    NULL DEFAULT NULL,';
+  cSqlCreateDisp := cSqlCreateDisp + 'acceso_subidas  INT(1)      NULL DEFAULT 0,';
+  cSqlCreateDisp := cSqlCreateDisp + 'subidas_counter INT(11)     NULL DEFAULT 0,';
+  cSqlCreateDisp := cSqlCreateDisp + 'subidas_total   INT(11)     NULL DEFAULT 0,';
+  cSqlCreateDisp := cSqlCreateDisp + 'CONSTRAINT dispositivos PRIMARY KEY (id)); ';
 
   oPub_Drv := TFDPhysSQLiteDriverLink.Create(nil);
   oPub_Drv.DriverID := 'SQLite';
